@@ -1,0 +1,485 @@
+*$
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: MOC3010M
+** Triac Driver Output Optocoupler, 6-Pin DIP 250V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT MOC3010M 1 2 3 4
+.PARAM Itrig=8m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=600
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=600           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: MOC3011M
+** Triac Driver Output Optocoupler, 6-Pin DIP 250V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT MOC3011M 1 2 3 4
+.PARAM Itrig=5m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=600
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=600           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: MOC3012M
+** Triac Driver Output Optocoupler, 6-Pin DIP 250V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT MOC3012M 1 2 3 4
+.PARAM Itrig=3m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=600
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=600           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: MOC3020M
+** Triac Driver Output Optocoupler, 6-Pin DIP 400V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT MOC3020M 1 2 3 4
+.PARAM Itrig=15m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=750
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=750           IBV=0.0001
+.ENDS
+*
+
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: MOC3021M
+** Triac Driver Output Optocoupler, 6-Pin DIP 400V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT MOC3021M 1 2 3 4
+.PARAM Itrig=8m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=750
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=750           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: MOC3022M
+** Triac Driver Output Optocoupler, 6-Pin DIP 400V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT MOC3022M 1 2 3 4
+.PARAM Itrig=5m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=750
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=750           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: MOC3023M
+** Triac Driver Output Optocoupler, 6-Pin DIP 400V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT MOC3023M 1 2 3 4
+.PARAM Itrig=3m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=750
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=750           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: FODM3012
+** Triac Driver Output Optocoupler, 6-Pin DIP 250V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT FODM3012 1 2 3 4
+.PARAM Itrig=3m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=600
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=600           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: FODM3022
+** Triac Driver Output Optocoupler, 6-Pin DIP 400V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT FODM3022 1 2 3 4
+.PARAM Itrig=5m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=750
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=750           IBV=0.0001
+.ENDS
+*
+********************** Optocoupler Electrical Circuit Model *********************
+** Product Name: FODM3023
+** Triac Driver Output Optocoupler, 6-Pin DIP 400V Random Phase
+** Spice Format: PSpice
+**-------------------------------------------------------------------------------
+**               Anode
+**               | Cathode
+**               | | Main Term2
+**               | | | Main Term 1
+**               | | | |
+.SUBCKT FODM3023 1 2 3 4
+.PARAM Itrig=3m
+.PARAM RH1=20e3
+.PARAM RH2=20e3
+.PARAM RH3=46.7e3
+Q2 vb1 vb1p vd1 0 PNP1
+Q1 vb1p vb1 4 0 NPN1
+R3 vb1 4 {RH2}
+D1 11 2 DL
+R1 ctrl1 4 1
+C1 ctrl1 4 10e-6
+R2 ctrl1 vb1 {RH1}
+R4 vd1 vb1p {RH3}
+Vsense 1 11 0
+G1 ctrl1 4 value={-500*I(Vsense)*3.0e-3/Itrig}
+*B1 ctrl1 4 I={-500*I(D1)*3e-3/Itrig}
+R6 vd2 vb2 {RH2}
+D3 vd2 3 D11
+Q3 vb2 vb2p 4 0 PNP1
+Q4 vb2p vb2 vd2 0 NPN1
+E1 vd2 N001 ctrl1 4 -1
+R5 N001 vb2 {RH1} 
+R7 vb2p 4 {RH3}
+D2 3 vd1 D11
+R34 3 4 10000e6
+C34 3 4 30e-12
+.MODEL PNP1 PNP(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL NPN1 NPN(is=1e-15 bf=10 cjc=5e-12 cje=20e-12 tf=0.1e-6 ise=1e-12)
+.MODEL D11 d
++ IS=3.5e-11       N=0.75           RS=5.45        BV=750
++ IBV=1e-3         CJO=50e-12       TBV1=1.5e-3    ISR=5.0e-10
++ NR=1.0           TRS1=3.2e-3      TRS2=8.1e-6    EG=0.15
+.MODEL DL d
++ IS=2.2534e-15    RS=2.665         N=1.5          EG=0.48
++ ISR=5.5e-11      NR=3.0
++ XTI=3.0          BV=750           IBV=0.0001
+.ENDS
+**------------------------------------------------------------------
+** Creation: Jul.-25-2022  Rev: 1.1
+** onsemi
+*$
