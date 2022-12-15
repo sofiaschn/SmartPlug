@@ -2,6 +2,7 @@
 #include <WiFiManager.h>
 #include <ESP8266WebServer.h>
 #include <ArduinoOTA.h>
+#include <ESP8266mDNS.h> 
 
 #define OUTPUT_LEN 3
 #define GPIO12 12
@@ -15,7 +16,7 @@
 
 ESP8266WebServer server(80);
 
-const int outputs[OUTPUT_LEN] = [GPIO12, GPIO13, GPIO14];
+const int outputs[OUTPUT_LEN] = { GPIO12, GPIO13, GPIO14 };
 
 void handleRoot(void);
 void handleGPIO(int gpio);
@@ -47,7 +48,7 @@ void setupOTA() {
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("[*] Starting device.", true);
+  Serial.println("[*] Starting device.");
 
   for (int i = 0; i < OUTPUT_LEN; i++) {
     pinMode(outputs[i], OUTPUT);
@@ -63,25 +64,27 @@ void setup() {
   
   Serial.print("[*] Connected to ");
   Serial.print(WiFi.SSID());
-  Serial.print(", IP address: ")
+  Serial.print(", IP address: ");
   Serial.println(WiFi.localIP());
 
   server.on("/", HTTP_GET, handleRoot);
 
-  for (int i = 0; i < OUTPUT_LEN; i++) {
-    String gpio = "/gpio/";
-    String path =  gpio + outputs[i];
-    server.on(path, HTTP_POST, [](){
-      handleGPIO(outputs[i]);
-    });
-  }
-
+  server.on("/gpio/12", HTTP_POST, [](){
+      handleGPIO(GPIO12);
+  });
+  server.on("/gpio/13", HTTP_POST, [](){
+      handleGPIO(GPIO13);
+  });
+  server.on("/gpio/14", HTTP_POST, [](){
+      handleGPIO(GPIO14);
+  });
+  
   server.onNotFound([](){
     server.send(404, "text/plain", "404: Not found");
   });
 
   server.begin();
-  Serial.println("HTTP server started");
+  Serial.println("[*] HTTP server started");
 
   setupOTA();
 }
@@ -91,9 +94,30 @@ void loop() {
 }
 
 void handleRoot() {
-  server.send(200, "text/html", "<form action=\"/LED\" method=\"POST\"><input type=\"submit\" value=\"Toggle LED\"></form>");
+  String response = "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+                    "<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}"
+                    ".input { background-color: #195B6A; border: none; color: white; padding: 16px 40px; text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}"
+                    ".inputOff {background-color: #77878A;}</style></head>"
+                    "<body><h1>Painel de Controle SmartPlug</h1>";
+
+  for (int i = 0; i < OUTPUT_LEN; i++) { 
+    int outputState = digitalRead(outputs[i]);
+
+    String action = (outputState ? "Desligar Tomada " : "Ligar Tomada ");
+    action += i + 1;
+
+    response += "<form action=\"/gpio/" + String(outputs[i]) + "\" method=\"POST\">";
+
+    String cssClass = !outputState ? "inputOff" : "";
+    response += "<input class=\"input " + cssClass + "\" type=\"submit\" value=\"" + action + "\"></form>";
+  }
+  response += "</body>";
+  server.send(200, "text/html", response);
 }
 
 void handleGPIO(int gpio) {
-
+  Serial.printf("[*] Toggling GPIO %d, current state: %d\n", gpio, digitalRead(gpio));
+  digitalWrite(gpio, !digitalRead(gpio));
+  server.sendHeader("Location","/");
+  server.send(303);
 }
