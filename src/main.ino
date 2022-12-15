@@ -1,152 +1,123 @@
 #include <ESP8266WiFi.h>
+#include <WiFiManager.h>
+#include <ESP8266WebServer.h>
+#include <ArduinoOTA.h>
+#include <ESP8266mDNS.h> 
 
-const char* ssid = "sofiaschn";
-const char* password = "schneider";
+#define OUTPUT_LEN 3
+#define GPIO12 12
+#define GPIO13 13
+#define GPIO14 14
 
-WiFiServer server(80);
+#define AP_SSID "SmartPlug"
 
-String header;
+#define OTA_HOSTNAME "SmartPlugOTA"
+#define OTA_PASSWORD "SmartPlugOTA"
 
-String output13State = "off";
-String output12State = "off";
+ESP8266WebServer server(80);
 
-const int output13 = 13;
-const int output12 = 12;
+const int outputs[OUTPUT_LEN] = { GPIO12, GPIO13, GPIO14 };
 
-unsigned long currentTime = millis();
-unsigned long previousTime = 0; 
-const long timeoutTime = 2000;
+void handleRoot(void);
+void handleGPIO(int gpio);
+
+void setupOTA() {
+  ArduinoOTA.setHostname(OTA_HOSTNAME);
+  ArduinoOTA.setPassword(OTA_PASSWORD);
+
+  ArduinoOTA.onStart([]() {
+    Serial.println("[*] OTA: Start");
+  });
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\n[*] OTA: End");
+  });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("[*] OTA Progress: %u%%\r", (progress / (total / 100)));
+  });
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("[!] OTA Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) Serial.println("[!] OTA: Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) Serial.println("[!] OTA: Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) Serial.println("[!] OTA: Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) Serial.println("[!] OTA: Receive Failed");
+    else if (error == OTA_END_ERROR) Serial.println("[!] OTA: End Failed");
+  });
+  ArduinoOTA.begin();
+  Serial.println("[*] OTA setup finished.");
+}
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("");
+  Serial.println("[*] Starting device.");
 
-  pinMode(output13, OUTPUT);
-  pinMode(output12, OUTPUT);
-
-  digitalWrite(output13, LOW);
-  digitalWrite(output12, LOW);
-
-  Serial.println("Setting sleep mode.");
-  WiFi.setSleepMode(WIFI_MODEM_SLEEP, 10);
-
-  Serial.println("Setting output power.");
-  WiFi.setOutputPower(0);
-
-  Serial.println("Setting PHY mode.");
-  WiFi.setPhyMode(WIFI_PHY_MODE_11N);
-
-  WiFi.mode(WIFI_STA);
-  
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  for (int i = 0; i < OUTPUT_LEN; i++) {
+    pinMode(outputs[i], OUTPUT);
+    digitalWrite(outputs[i], LOW);
   }
 
-  Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println("IP address: ");
+  WiFi.setSleepMode(WIFI_MODEM_SLEEP, 10);
+  WiFi.setOutputPower(0);
+  WiFi.setPhyMode(WIFI_PHY_MODE_11N);
+  
+  WiFiManager manager;
+  manager.autoConnect(AP_SSID);
+  
+  Serial.print("[*] Connected to ");
+  Serial.print(WiFi.SSID());
+  Serial.print(", IP address: ");
   Serial.println(WiFi.localIP());
-  server.begin();  
+
+  server.on("/", HTTP_GET, handleRoot);
+
+  server.on("/gpio/12", HTTP_POST, [](){
+      handleGPIO(GPIO12);
+  });
+  server.on("/gpio/13", HTTP_POST, [](){
+      handleGPIO(GPIO13);
+  });
+  server.on("/gpio/14", HTTP_POST, [](){
+      handleGPIO(GPIO14);
+  });
+  
+  server.onNotFound([](){
+    server.send(404, "text/plain", "404: Not found");
+  });
+
+  server.begin();
+  Serial.println("[*] HTTP server started");
+
+  setupOTA();
 }
 
-void loop(){
-  WiFiClient client = server.available();   // Listen for incoming clients
+void loop() {
+  server.handleClient();
+}
 
-  if (client) {                             // If a new client connects,
-    Serial.println("New Client.");          // print a message out in the serial port
-    String currentLine = "";                // make a String to hold incoming data from the client
-    currentTime = millis();
-    previousTime = currentTime;
-    while (client.connected() && currentTime - previousTime <= timeoutTime) { // loop while the client's connected
-      currentTime = millis();         
-      if (client.available()) {             // if there's bytes to read from the client,
-        char c = client.read();             // read a byte, then
-        Serial.write(c);                    // print it out the serial monitor
-        header += c;
-        if (c == '\n') {                    // if the byte is a newline character
-          // if the current line is blank, you got two newline characters in a row.
-          // that's the end of the client HTTP request, so send a response:
-          if (currentLine.length() == 0) {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
-            client.println("HTTP/1.1 200 OK");
-            client.println("Content-type:text/html");
-            client.println("Connection: close");
-            client.println();
-            
-            // turns the GPIOs on and off
-            if (header.indexOf("GET /13/on") >= 0) {
-              Serial.println("GPIO 13 on");
-              output13State = "on";
-              digitalWrite(output13, HIGH);
-            } else if (header.indexOf("GET /13/off") >= 0) {
-              Serial.println("GPIO 13 off");
-              output13State = "off";
-              digitalWrite(output13, LOW);
-            } else if (header.indexOf("GET /12/on") >= 0) {
-              Serial.println("GPIO 12 on");
-              output12State = "on";
-              digitalWrite(output12, HIGH);
-            } else if (header.indexOf("GET /12/off") >= 0) {
-              Serial.println("GPIO 12 off");
-              output12State = "off";
-              digitalWrite(output12, LOW);
-            }
-            
-            // Display the HTML web page
-            client.println("<!DOCTYPE html><html>");
-            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-            client.println("<link rel=\"icon\" href=\"data:,\">");
-            // CSS to style the on/off buttons 
-            // Feel free to change the background-color and font-size attributes to fit your preferences
-            client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-            client.println(".button { background-color: #195B6A; border: none; color: white; padding: 16px 40px;");
-            client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-            client.println(".button2 {background-color: #77878A;}</style></head>");
-            
-            // Web Page Heading
-            client.println("<body><h1>ESP8266 Web Server</h1>");
-            
-            // Display current state, and ON/OFF buttons for GPIO 13  
-            client.println("<p>GPIO 13 - State " + output13State + "</p>");
-            // If the output5State is off, it displays the ON button       
-            if (output13State=="off") {
-              client.println("<p><a href=\"/13/on\"><button class=\"button\">ON</button></a></p>");
-            } else {
-              client.println("<p><a href=\"/13/off\"><button class=\"button button2\">OFF</button></a></p>");
-            } 
-               
-            // Display current state, and ON/OFF buttons for GPIO 12  
-            client.println("<p>GPIO 12 - State " + output12State + "</p>");
-            // If the output12State is off, it displays the ON button       
-            if (output12State=="off") {
-              client.println("<p><a href=\"/12/on\"><button class=\"button\">ON</button></a></p>");
-            } else {
-              client.println("<p><a href=\"/12/off\"><button class=\"button button2\">OFF</button></a></p>");
-            }
-            client.println("</body></html>");
-            
-            // The HTTP response ends with another blank line
-            client.println();
-            // Break out of the while loop
-            break;
-          } else { // if you got a newline, then clear currentLine
-            currentLine = "";
-          }
-        } else if (c != '\r') {  // if you got anything else but a carriage return character,
-          currentLine += c;      // add it to the end of the currentLine
-        }
-      }
-    }
-    // Clear the header variable
-    header = "";
-    // Close the connection
-    client.stop();
-    Serial.println("Client disconnected.");
-    Serial.println("");
+void handleRoot() {
+  String response = "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+                    "<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}"
+                    ".input { background-color: #195B6A; border: none; color: white; padding: 16px 40px; text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}"
+                    ".inputOff {background-color: #77878A;}</style></head>"
+                    "<body><h1>Painel de Controle SmartPlug</h1>";
+
+  for (int i = 0; i < OUTPUT_LEN; i++) { 
+    int outputState = digitalRead(outputs[i]);
+
+    String action = (outputState ? "Desligar Tomada " : "Ligar Tomada ");
+    action += i + 1;
+
+    response += "<form action=\"/gpio/" + String(outputs[i]) + "\" method=\"POST\">";
+
+    String cssClass = !outputState ? "inputOff" : "";
+    response += "<input class=\"input " + cssClass + "\" type=\"submit\" value=\"" + action + "\"></form>";
   }
+  response += "</body>";
+  server.send(200, "text/html", response);
+}
+
+void handleGPIO(int gpio) {
+  Serial.printf("[*] Toggling GPIO %d, current state: %d\n", gpio, digitalRead(gpio));
+  digitalWrite(gpio, !digitalRead(gpio));
+  server.sendHeader("Location","/");
+  server.send(303);
 }
